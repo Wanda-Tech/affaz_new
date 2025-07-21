@@ -16,6 +16,9 @@ dotnet add package Microsoft.EntityFrameworkCore.Tools
 dotnet ef migrations add initialMigrations
 dotnet ef migrations add initialMigrations -o ./Data/Migrations
 
+dotnet ef migrations add initialMigrations -o \\Data\\Migrations
+
+
 
 ### To apply migration against DataBase
 dotnet ef database update
