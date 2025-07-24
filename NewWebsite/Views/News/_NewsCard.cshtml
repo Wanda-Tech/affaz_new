@@ -1,0 +1,17 @@
+@model SimpleNews
+
+<div class="card card-similar-news">
+    <a asp-action="Detail" asp-controller="News" asp-route-id="@Model.NewsId">
+        <div class="row">
+            <div class="col-lg-3 col-md-12 col-sm-12 mb-sm-3">
+                <img src="@Model.ImageUrl" height="100%" width="100%">
+            </div>
+            <div class="col-lg-9 col-md-12 col-sm-12 mb-sm-3">
+                <span class="badge bg-black">@Model.NewsCategory</span>
+                <p>@Model.Title</p>
+                
+                <span>@Model.CreatedDateString</span>
+            </div>
+        </div>
+    </a>
+</div>

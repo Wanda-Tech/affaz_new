@@ -18,7 +18,7 @@ public class User
 
     public DateTime CreatedDate { get; set; }
 
-    public List<News> NewsList { get; set; }
+    public List<News> NewsList { get; set; } = new List<News>();
     
-    public List<UserRole> UserRoles { get; set; }
+    public List<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

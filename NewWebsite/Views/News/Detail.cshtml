@@ -1,0 +1,43 @@
+﻿@model NewsDetailResponse
+@{
+    ViewData["Title"] = "News Detail Page";
+}
+
+
+<div class="row">
+    <div class="col-md-12 news-header">
+        <a asp-action="Index" asp-controller="News">Back to list</a>
+        
+        <h1 class="title">@Model.News.Title</h1>
+
+        <h6 class="text-muted sub-title">By <b>@Model.News.User.Email</b></h6>
+
+        <h6 class="text-muted sub-title">@Model.News.CreatedDateString</h6>
+
+        <div class="news-image">
+            <img src="@Model.News.ImageUrl" alt="@Model.News.Title" height="300">
+        </div>
+
+
+        <div class="news-summary">
+            <h4>Summary</h4>
+            @Html.Raw(Model.News.Summary)
+        </div>
+
+
+        <div class="news-body">
+            @Html.Raw(Model.News.Content)
+        </div>
+        
+        
+        <div class="news-similar">
+            <h4>Read Next</h4>
+            
+            @foreach(var news in Model.ReadNextNews)
+            {
+                <partial name="_NewsCard" model="news" />
+            }
+            
+        </div>
+    </div>
+</div>

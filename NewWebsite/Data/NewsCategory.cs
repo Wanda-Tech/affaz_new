@@ -13,6 +13,6 @@ public class NewsCategory
     public string? Description { get; set; }
 
 
-    public List<News> NewsList { get; set; }
+    public List<News> NewsList { get; set; } = new List<News>();
 
 }

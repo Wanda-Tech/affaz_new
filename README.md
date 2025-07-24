@@ -10,6 +10,11 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 dotnet add package Microsoft.EntityFrameworkCore.Tools
 ```
 
+-- AutoMapper
+```
+dotnet add package automapper
+```
+
 
 ### To create new migration file
 -- Crete new migraiton file "initialMigrations_TIMESTAMP" with sql script

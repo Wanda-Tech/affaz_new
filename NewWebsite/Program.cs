@@ -1,4 +1,6 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using NewWebsite.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,10 @@ builder.Services.AddDbContext<NewsWebsiteContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<INewsService, NewsService>();
 
+// auto-mapper
+builder.Services.AddAutoMapper(o => {}, AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

@@ -12,6 +12,6 @@ public class Role
     [MaxLength(255)]
     public string? Description { get; set; }
     
-    public List<UserRole> UserRoles { get; set; }
+    public List<UserRole> UserRoles { get; set; } = new List<UserRole>();
     
 }
