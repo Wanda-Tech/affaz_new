@@ -25,4 +25,5 @@ public class SimpleNews
     public int NewsCategoryId { get; set; }
     public string NewsCategory { get; set; }
 
+    public int TotalLikes { get; set; }
 }

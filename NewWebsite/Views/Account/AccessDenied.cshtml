@@ -1,0 +1,14 @@
+﻿@model SignInRequest
+@{
+    ViewData["Title"] = "Access Denied";
+    var claims = User.Claims.ToDictionary(q=> q.Type, q=> q.Value);
+}
+
+@* <div class="container w-50">
+    <p>You dont have access to this page</p>
+    
+    @foreach(var item in claims)
+    {
+        <p>@item.Key : @item.Value</p>
+    }
+</div> *@

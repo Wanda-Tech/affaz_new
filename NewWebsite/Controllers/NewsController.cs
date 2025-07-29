@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewWebsite.Models;
 using NewWebsite.Services;
 
 namespace NewWebsite.Controllers;
 
+// [Authorize(Roles = "Admin,Editor")]
 public class NewsController : Controller
 {
     private readonly ILogger<NewsController> _logger;
@@ -19,8 +21,8 @@ public class NewsController : Controller
 
     public async Task<IActionResult> Index()
     {
-        List<SimpleNews> newsList = await _newsService.GetAllNewsAsync(); 
-        
+        List<SimpleNews> newsList = await _newsService.GetAllNewsAsync();
+
         return View(newsList);
     }
 
@@ -28,12 +30,12 @@ public class NewsController : Controller
     public async Task<IActionResult> Detail(int id)
     {
         SimpleNews? news = await _newsService.GetNewsByIdAsync(id);
-        
+
         if (news == null)
         {
             return NotFound();
         }
-        
+
         NewsDetailResponse response = new NewsDetailResponse
         {
             News = news,
@@ -41,6 +43,20 @@ public class NewsController : Controller
         };
 
         return View(response);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Like(string newsId)
+    {
+        if (int.TryParse(newsId, out int id))
+        {
+            int newCounter = await _newsService.UpdateLikesAsync(int.Parse(newsId));
+
+            return Ok(new { totalLikes = newCounter });
+        }
+
+
+        return BadRequest("News ID cannot be null or empty.");
     }
 
 }

@@ -26,5 +26,9 @@ public class News
 
     public int NewsCategoryId { get; set; }
     public NewsCategory NewsCategory { get; set; }
+    
+    public int TotalLikes { get; set; }
+    
+    public ICollection<NewsLike> Likes { get; set; } = new List<NewsLike>();
 
 }

@@ -1,0 +1,54 @@
+﻿@model SignUpRequest
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="container w-50">
+    <div class="card">
+        <div class="card-header">
+            <h2>Sign Up</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="SignUp" method="post">
+                
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label"></label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <input asp-for="IsAgreedTerms" class="" />
+                    <label asp-for="IsAgreedTerms" class="form-label">Please agree to our <a asp-action="Privacy" asp-controller="Home">terms & conditions.</a></label>
+                    <span asp-validation-for="IsAgreedTerms" class="text-danger"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 btn-lg">Sign Up</button>
+            </form>
+            
+            <hr />
+            <div class="d-flex text-center">
+                If you already have account <a asp-action="SignIn" class="text-muted">&middot; Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using NewWebsite.Helpers;
 
 public static class DbInitializer
 {
@@ -35,7 +36,7 @@ public static class DbInitializer
                 Email = "admin@news.com",
             };
 
-            string password = userAdmin.Email;
+            string password = PasswordHasher.HashPassword(userAdmin.Email);
 
             userAdmin.Password = password;
 

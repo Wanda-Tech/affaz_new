@@ -11,6 +11,12 @@
         <h1 class="title">@Model.News.Title</h1>
 
         <h6 class="text-muted sub-title">By <b>@Model.News.User.Email</b></h6>
+        
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <span class="badge bg-secondary" id="likeCounter">@Model.News.TotalLikes likes</span>
+            
+            <div id="newsLikeBtn" class="btn btn-sm btn-primary" data-news-id="@Model.News.NewsId">I likes this!</div>
+        </div>
 
         <h6 class="text-muted sub-title">@Model.News.CreatedDateString</h6>
 

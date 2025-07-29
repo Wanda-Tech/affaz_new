@@ -1,4 +1,5 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using NewWebsite.Services;
 
@@ -7,15 +8,30 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add authentication services
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.Cookie.Name = ".NewsWebsite";
+        options.LoginPath = "/Account/SignIn";
+        options.LogoutPath = "/Account/SignOut";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<NewsWebsiteContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // auto-mapper
 builder.Services.AddAutoMapper(o => {}, AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -30,6 +46,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
