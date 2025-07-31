@@ -33,6 +33,11 @@ public class AccountController : Controller
             {
                 User user = await _accountService.AuthenticateAsync(request);
 
+                if (user.UserRoles.Any(q=> q.Role.Name == (Constants.Roles.Admin)))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+
                 return RedirectToAction("Index", "Home");
             }
             catch (System.Exception ex)

@@ -19,14 +19,31 @@ public class NewsService : INewsService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<List<SimpleNews>> GetAllNewsAsync()
+    public async Task<PaginatedResponse<SimpleNews>> GetAllNewsAsync(SearchRequest request)
     {
-        List<News> news = await _context.News
+        IQueryable<News> query = _context.News
             .Include(n => n.User)
             .Include(n => n.NewsCategory)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            query = query
+                .Where(q => EF.Functions.Like(q.Title, $"%{request.Search}%") ||
+                q.User.Email == request.Search);
+        }
+
+        int totalCount = await query.CountAsync();
+
+        List<News> news = await query
+            .OrderByDescending(q => q.CreatedDate)
+            .Skip((request.Page - 1) * request.Limit)
+            .Take(request.Limit)
             .ToListAsync();
 
-        List<SimpleNews> response = _mapper.Map<List<SimpleNews>>(news);
+        List<SimpleNews> simpleNews = _mapper.Map<List<SimpleNews>>(news);
+        
+        var response = new PaginatedResponse<SimpleNews>(simpleNews, request, totalCount);
 
         return response;
     }
@@ -37,6 +54,23 @@ public class NewsService : INewsService
         List<News> news = await _context.News
             .Include(n => n.User)
             .Include(n => n.NewsCategory)
+            .OrderBy(n => Guid.NewGuid()) // Random order
+            .Take(limit)
+            .ToListAsync();
+
+        List<SimpleNews> response = _mapper.Map<List<SimpleNews>>(news);
+
+        return response;
+    }
+
+    public async Task<List<SimpleNews>> GetRecentNews(int limit = 10)
+    {
+        DateTime daysBefore = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
+        
+        List<News> news = await _context.News
+            .Include(n => n.User)
+            .Include(n => n.NewsCategory)
+            .Where(q => q.CreatedDate >= daysBefore)
             .OrderBy(n => Guid.NewGuid()) // Random order
             .Take(limit)
             .ToListAsync();

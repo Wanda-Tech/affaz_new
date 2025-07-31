@@ -1,0 +1,47 @@
+﻿@model PaginatedResponse<SimpleNews>
+@{
+    ViewData["Title"] = "Manage News";
+}
+
+<h1>News</h1>
+
+<form class="d-flex just-between my-4">
+    <input name="Search" placeholder="Search by title or user email" class="form-control" value="@ViewBag.Search" />
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<span>@Model.TotalRecordsCount records</span>
+
+<table class="table table-striped">
+    <thead>
+        <th>Id</th>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Owner</th>
+        <th>Created Date</th>
+        <th></th>
+    </thead>
+    <tbody>
+        @foreach(var news in Model.Response)
+        {
+            <tr>
+                <td>@news.NewsId</td>
+                <td>
+                    <img src="@news.ImageUrl" height="60" />
+                </td>
+                <td>@news.Title</td>
+                <td>@news.NewsCategory</td>
+                <td>@news.User.Email</td>
+                <td>@news.CreatedDateString</td>
+                <td>
+                    <a asp-action="Edit" asp-controller="News" class="btn btn-link">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<partial name="_Pagination" model="@Model" />

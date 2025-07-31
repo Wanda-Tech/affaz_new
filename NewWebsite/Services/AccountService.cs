@@ -97,8 +97,22 @@ public class AccountService : IAccountService
     {
         if (_httpContextAccessor.HttpContext == null)
             return;
-            
-            
+
+
         await _httpContextAccessor.HttpContext.SignOutAsync(AUTH_SCHEME);
+    }
+    
+    
+    public async Task<List<User>> GetRecentUsers(int limit = 10)
+    {
+        DateTime daysBefore = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
+
+        var users = await _context.Users
+            .Include(q => q.UserRoles)
+                .ThenInclude(q => q.Role)
+            .Where(q => q.CreatedDate >= daysBefore)
+            .ToListAsync();
+
+        return users;
     }
 }

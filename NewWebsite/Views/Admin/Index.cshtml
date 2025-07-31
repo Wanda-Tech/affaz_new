@@ -1,0 +1,66 @@
+﻿@model AdminDashbord
+@{
+    ViewData["Title"] = "Admininstrator Home";
+}
+
+<h1>Welcome Admininstrator</h1>
+
+
+<div class="row">
+    <div class="col-6">
+        <h4>Recent News</h4>
+        <span>@Model.RecentNews.Count records</span>
+        <table class="table table-striped">
+            <thead>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Owner</th>
+                <th></th>
+            </thead>
+            <tbody>
+                @foreach(var news in Model.RecentNews)
+                {
+                    <tr>
+                        <td>@news.NewsId</td>
+                        <td>@news.Title</td>
+                        <td>@news.NewsCategory</td>
+                        <td>@news.User.Email</td>
+                        <td>
+                            <a asp-action="Edit" asp-controller="News" class="btn btn-link">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-6">
+        <h4>Recent Users</h4>
+        <span>@Model.RecentUsers.Count records</span>
+        <table class="table table-striped">
+            <thead>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Roles</th>
+                <th></th>
+            </thead>
+            <tbody>
+                @foreach(var user in Model.RecentUsers)
+                {
+                    <tr>
+                        <td>@user.UserId</td>
+                        <td>@user.Email</td>
+                        <td>@user.Phone</td>
+                        <td>
+                            @string.Join(", ", user.UserRoles.Select(q=> q.Role.Name).ToList())
+                        </td>
+                        <td>
+                            <a asp-action="EditUser" asp-controller="Account" class="btn btn-link">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

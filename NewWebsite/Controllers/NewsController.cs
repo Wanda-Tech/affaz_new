@@ -7,7 +7,7 @@ using NewWebsite.Services;
 
 namespace NewWebsite.Controllers;
 
-// [Authorize(Roles = "Admin,Editor")]
+[Authorize(Roles = $"{Constants.Roles.Admin},{Constants.Roles.Editor}")]
 public class NewsController : Controller
 {
     private readonly ILogger<NewsController> _logger;
@@ -19,9 +19,9 @@ public class NewsController : Controller
         _newsService = newsService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(SearchRequest request)
     {
-        List<SimpleNews> newsList = await _newsService.GetAllNewsAsync();
+        PaginatedResponse<SimpleNews> newsList = await _newsService.GetAllNewsAsync(request);
 
         return View(newsList);
     }
