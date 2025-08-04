@@ -13,4 +13,5 @@ public interface IAccountService
     public Task SignOutAsync();
 
     public Task<List<User>> GetRecentUsers(int limit = 10);
+    public int GetCurrentUserId();
 }

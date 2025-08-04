@@ -3,10 +3,15 @@
     ViewData["Title"] = "Manage News";
 }
 
-<h1>News</h1>
+<h1>News <a asp-action="CreateNews" class="btn btn-link">Create</a>
+</h1>
 
-<form class="d-flex just-between my-4">
+<partial name="_TmpMessage" />
+
+<form class="d-flex just-between my-4 gap-2">
     <input name="Search" placeholder="Search by title or user email" class="form-control" value="@ViewBag.Search" />
+    
+    <select name="Status" id="Status" asp-items="@Html.GetEnumSelectList<NewsStatus>()" class="form-control"></select>
     
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -20,6 +25,7 @@
         <th>Title</th>
         <th>Category</th>
         <th>Owner</th>
+        <th>Status</th>
         <th>Created Date</th>
         <th></th>
     </thead>
@@ -34,9 +40,10 @@
                 <td>@news.Title</td>
                 <td>@news.NewsCategory</td>
                 <td>@news.User.Email</td>
+                <td>@news.NewsStatus</td>
                 <td>@news.CreatedDateString</td>
                 <td>
-                    <a asp-action="Edit" asp-controller="News" class="btn btn-link">Edit</a>
+                    <a asp-action="EditNews" asp-controller="Admin" asp-route-id="@news.NewsId" class="btn btn-link">Edit</a>
                 </td>
             </tr>
         }
@@ -45,3 +52,10 @@
 
 
 <partial name="_Pagination" model="@Model" />
+
+
+@section Scripts {
+    <script>
+        $("#Status").val('@ViewBag.Filter')
+    </script>
+}

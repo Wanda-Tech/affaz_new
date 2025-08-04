@@ -1,0 +1,96 @@
+@model NewsRequest
+@{
+    string header = Model.NewsId.HasValue ? "Edit News" : "Create News";
+}
+
+@* <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" /> *@
+
+<form method="post" asp-action="CreateNews">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    
+    <input asp-for="NewsId" type="hidden" />
+    <h4>@header</h4>
+    
+    <div class="row mb-4 mt-5">
+        <div class="col-2">
+            <label asp-for="Title" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title"></span>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="NewsCategoryId" class="control-label">NewsCategory</label>
+        </div>
+        <div class="col-9">
+            <select asp-for="NewsCategoryId" class="form-control" asp-items="@Model.NewsCategorySelectList"></select>
+            <span asp-validation-for="NewsCategoryId"></span>
+        </div>
+    </div>
+    
+
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="Summary" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <textarea asp-for="Summary" class="form-control"></textarea>
+            <span asp-validation-for="Summary"></span>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="NewsStatus" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <select asp-for="NewsStatus" class="form-control" asp-items="@Html.GetEnumSelectList<NewsStatus>()"></select>
+            <span asp-validation-for="NewsStatus"></span>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="Content" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <textarea asp-for="Content" class=""></textarea>
+            <span asp-validation-for="NewsStatus"></span>
+        </div>
+    </div>
+    
+    <div class="row mb-2 mt-4">
+        <div class="col-2">
+        </div>
+        <div class="col-9 text-right">
+            <button type="submit" class="btn btn-primary">@header</button>
+        </div>
+    </div>
+    
+</form>
+
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/8/tinymce.min.js"></script>
+
+    <script>
+    tinymce.init({
+        selector: 'textarea#Content',
+        height: 500,
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | ' +
+        'bold italic backcolor | alignleft aligncenter ' +
+        'alignright alignjustify | bullist numlist outdent indent | ' +
+        'removeformat | help',
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
+    </script>
+
+}

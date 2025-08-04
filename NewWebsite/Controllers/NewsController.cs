@@ -19,7 +19,7 @@ public class NewsController : Controller
         _newsService = newsService;
     }
 
-    public async Task<IActionResult> Index(SearchRequest request)
+    public async Task<IActionResult> Index(NewsSearchRequest request)
     {
         PaginatedResponse<SimpleNews> newsList = await _newsService.GetAllNewsAsync(request);
 

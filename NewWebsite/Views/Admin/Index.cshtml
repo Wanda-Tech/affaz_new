@@ -9,13 +9,14 @@
 <div class="row">
     <div class="col-6">
         <h4>Recent News</h4>
-        <span>@Model.RecentNews.Count records</span>
+        <span>@Model.RecentNews.Count records</span> <a asp-action="News">view all</a>
         <table class="table table-striped">
             <thead>
                 <th>Id</th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Owner</th>
+                <th>Status</th>
                 <th></th>
             </thead>
             <tbody>
@@ -26,6 +27,7 @@
                         <td>@news.Title</td>
                         <td>@news.NewsCategory</td>
                         <td>@news.User.Email</td>
+                        <td>@news.NewsStatus</td>
                         <td>
                             <a asp-action="Edit" asp-controller="News" class="btn btn-link">Edit</a>
                         </td>

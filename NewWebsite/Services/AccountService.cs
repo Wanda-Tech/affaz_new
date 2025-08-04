@@ -50,6 +50,7 @@ public class AccountService : IAccountService
         // login 
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new Claim(ClaimTypes.Name, user.Email),
             new Claim(ClaimTypes.Email, user.Email)
         };
@@ -101,8 +102,8 @@ public class AccountService : IAccountService
 
         await _httpContextAccessor.HttpContext.SignOutAsync(AUTH_SCHEME);
     }
-    
-    
+
+
     public async Task<List<User>> GetRecentUsers(int limit = 10)
     {
         DateTime daysBefore = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
@@ -114,5 +115,24 @@ public class AccountService : IAccountService
             .ToListAsync();
 
         return users;
+    }
+
+
+    public int GetCurrentUserId()
+    {
+        ArgumentNullException.ThrowIfNull(_httpContextAccessor.HttpContext);
+
+
+        if (_httpContextAccessor.HttpContext.User.HasClaim(q => q.Type == ClaimTypes.NameIdentifier))
+        {
+            string? userIdString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (int.TryParse(userIdString, out int userId))
+            {
+                return userId;
+            }
+        }
+
+        throw new Exception("User is not authorized");
     }
 }

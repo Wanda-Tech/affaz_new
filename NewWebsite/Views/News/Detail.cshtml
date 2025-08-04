@@ -27,7 +27,7 @@
 
         <div class="news-summary">
             <h4>Summary</h4>
-            @Html.Raw(Model.News.Summary)
+            @Html.Raw(Model.News.Summary?.Replace("\\n\\r", "<br/>"))
         </div>
 
 

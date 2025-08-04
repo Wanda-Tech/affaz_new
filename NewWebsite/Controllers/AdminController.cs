@@ -30,14 +30,74 @@ public class AdminController : Controller
 
         return View(adminDashbord);
     }
-    
-    
-    public async Task<IActionResult> News(SearchRequest request)
+
+
+    public async Task<IActionResult> News(NewsSearchRequest request)
     {
         ViewBag.Search = request.Search;
+        ViewBag.Filter = (int?)request.Status;
 
         PaginatedResponse<SimpleNews> newsList = await _newsService.GetAllNewsAsync(request);
-        
+
         return View(newsList);
+    }
+
+
+    public async Task<IActionResult> CreateNews()
+    {
+        NewsRequest request = new NewsRequest();
+
+        request.NewsCategorySelectList = await _newsService.GetNewsCategorySelectListAsync();
+
+        return View(request);
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateNews(NewsRequest request)
+    {
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                News news = await _newsService.CreateOrUpdateAsync(request);
+
+                string message = $"News {news.NewsId} was created successfully";
+
+                if (request.IsUpdating)
+                {
+                    message = "News was just updated";
+                }
+
+                SetTempMessage(message);
+
+                return RedirectToAction(nameof(News));
+            }
+        }
+        catch (System.Exception ex)
+        {
+            ModelState.AddModelError("", ex.Message);
+        }
+        
+        request.NewsCategorySelectList = await _newsService.GetNewsCategorySelectListAsync(request.NewsCategoryId);
+
+        return View(request);
+    }
+
+    public async Task<IActionResult> EditNews(int id)
+    {
+        SimpleNews news = await _newsService.GetNewsByIdAsync(id);
+        
+        NewsRequest request = new NewsRequest(news);
+
+        request.NewsCategorySelectList = await _newsService.GetNewsCategorySelectListAsync(request.NewsCategoryId);
+
+        return View("CreateNews", request);
+    }
+
+    private void SetTempMessage(string message)
+    {
+        TempData["Tmp.Message"] = message;
     }
 }

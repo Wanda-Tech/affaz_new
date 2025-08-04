@@ -1,5 +1,7 @@
 
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NewWebsite.Extension;
 using NewWebsite.Models;
@@ -11,15 +13,17 @@ public class NewsService : INewsService
     private readonly NewsWebsiteContext _context;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAccountService _accountService;
 
-    public NewsService(NewsWebsiteContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+    public NewsService(NewsWebsiteContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, IAccountService accountService)
     {
         _context = context;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
+        _accountService = accountService;
     }
 
-    public async Task<PaginatedResponse<SimpleNews>> GetAllNewsAsync(SearchRequest request)
+    public async Task<PaginatedResponse<SimpleNews>> GetAllNewsAsync(NewsSearchRequest request)
     {
         IQueryable<News> query = _context.News
             .Include(n => n.User)
@@ -33,6 +37,11 @@ public class NewsService : INewsService
                 q.User.Email == request.Search);
         }
 
+        if (request.Status.HasValue)
+        {
+            query = query.Where(q => q.NewsStatus == request.Status);
+        }
+
         int totalCount = await query.CountAsync();
 
         List<News> news = await query
@@ -42,7 +51,7 @@ public class NewsService : INewsService
             .ToListAsync();
 
         List<SimpleNews> simpleNews = _mapper.Map<List<SimpleNews>>(news);
-        
+
         var response = new PaginatedResponse<SimpleNews>(simpleNews, request, totalCount);
 
         return response;
@@ -66,7 +75,7 @@ public class NewsService : INewsService
     public async Task<List<SimpleNews>> GetRecentNews(int limit = 10)
     {
         DateTime daysBefore = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
-        
+
         List<News> news = await _context.News
             .Include(n => n.User)
             .Include(n => n.NewsCategory)
@@ -97,8 +106,8 @@ public class NewsService : INewsService
     public async Task<int> UpdateLikesAsync(int newsId)
     {
         var news = await _context.News.FindAsync(newsId);
-        
-        
+
+
         NewsLike newsLike = new NewsLike
         {
             NewsId = newsId,
@@ -110,10 +119,53 @@ public class NewsService : INewsService
         news.TotalLikes += 1;
 
         news.Likes.Add(newsLike);
-        
-        
+
+
         await _context.SaveChangesAsync();
 
         return news.TotalLikes;
+    }
+
+
+    public async Task<News> CreateOrUpdateAsync(NewsRequest request)
+    {
+        if (request.IsUpdating)
+        {
+            News? existingNews = await _context.News.FindAsync(request.NewsId);
+
+            if (existingNews == null)
+            {
+                throw new Exception("Existing news does not exist");
+            }
+
+            existingNews.Title = request.Title;
+            existingNews.Summary = request.Summary;
+            existingNews.Content = request.Content;
+            existingNews.NewsCategoryId = request.NewsCategoryId;
+            existingNews.NewsStatus = request.NewsStatus;
+
+            await _context.SaveChangesAsync();
+
+            return existingNews;
+        }
+        else
+        {
+            News newsToCreate = _mapper.Map<News>(request);
+
+            newsToCreate.UserId = _accountService.GetCurrentUserId();
+
+            _context.News.Add(newsToCreate);
+
+            await _context.SaveChangesAsync();
+
+            return newsToCreate;
+        }
+    }
+
+    public async Task<SelectList> GetNewsCategorySelectListAsync(int? selectedId = null)
+    {
+        var categories = await _context.NewsCategories.ToDictionaryAsync(q => q.Id, q => q.Name);
+
+        return new SelectList(categories, "Key", "Value", selectedId);
     }
 }

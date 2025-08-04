@@ -1,4 +1,4 @@
-﻿@model List<SimpleNews>
+﻿@model PaginatedResponse<SimpleNews>
 @{
     ViewData["Title"] = "News Index";
 }
@@ -7,7 +7,7 @@
 <h1 class="title">News Home</h1>
 <span>@DateTime.Now.ToString()</span>
     
-@foreach(var news in Model)
+@foreach(var news in Model.Response)
 {
     <partial name="_NewsCard" model="news" />
 }

@@ -1,0 +1,13 @@
+@{
+    object? tmpMessage = null;
+    
+    if (TempData.TryGetValue("Tmp.Message", out tmpMessage))
+    {
+        TempData["Tmp.Message"] = null;
+    }
+}
+
+@if (tmpMessage != null)
+{
+    <div class="alert alert-info">@tmpMessage</div>
+}
