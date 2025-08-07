@@ -16,4 +16,5 @@ public interface INewsService
 
     public Task<News> CreateOrUpdateAsync(NewsRequest request);
     public Task<SelectList> GetNewsCategorySelectListAsync(int? selectedId = null);
+    public Task ChangeNewsAsync(ChangeNewsRequest request);
 }

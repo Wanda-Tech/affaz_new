@@ -7,7 +7,6 @@ using NewWebsite.Services;
 
 namespace NewWebsite.Controllers;
 
-[Authorize(Roles = $"{Constants.Roles.Admin},{Constants.Roles.Editor}")]
 public class NewsController : Controller
 {
     private readonly ILogger<NewsController> _logger;
@@ -26,7 +25,6 @@ public class NewsController : Controller
         return View(newsList);
     }
 
-    // GET: News/Detail/5
     public async Task<IActionResult> Detail(int id)
     {
         SimpleNews? news = await _newsService.GetNewsByIdAsync(id);
@@ -46,6 +44,7 @@ public class NewsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{Constants.Roles.Admin},{Constants.Roles.Editor}")]
     public async Task<IActionResult> Like(string newsId)
     {
         if (int.TryParse(newsId, out int id))

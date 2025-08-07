@@ -1,0 +1,60 @@
+@model UserRequest
+@{
+    string header = Model.IsUpdating ? "Edit User" : "Create User";
+}
+
+<form method="post" asp-action="EditUser">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    
+    <input asp-for="UserId" type="hidden" />
+    <h4>@header</h4>
+    
+    <div class="row mb-4 mt-5">
+        <div class="col-2">
+            <label asp-for="Phone" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone"></span>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="Email" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email"></span>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="SelectedRoleIds" class="control-label">Select Roles</label>
+        </div>
+        <div class="col-9">
+            <div class="d-flex flex-column gap-2">
+                @foreach(var role in Model.RolesList)
+                {
+                    <div>
+                        <input class="form-check-input" type="checkbox" value="@role.Key" id="role_@role.Key" name="SelectedRoleIds" @(Model.ExistingRoles.Contains(role.Key) ? "checked" : "")>
+                        <label class="form-check-label mr-4" for="role_@role.Key">
+                            @role.Value
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-2 mt-4">
+        <div class="col-2">
+        </div>
+        <div class="col-9 text-right">
+            <button type="submit" class="btn btn-primary">@header</button>
+        </div>
+    </div>
+    
+</form>
+

@@ -168,4 +168,39 @@ public class NewsService : INewsService
 
         return new SelectList(categories, "Key", "Value", selectedId);
     }
+
+    public async Task ChangeNewsAsync(ChangeNewsRequest request)
+    {
+        if (request.Delete != 1 && request.Publish != 1)
+        {
+            throw new ApplicationException($"Request is invalid");
+        }
+        
+        News? news = await _context.News.FindAsync(request.News.NewsId);
+
+        if (news == null)
+        {
+            throw new ApplicationException($"News {request.News.NewsId} does not exist");
+        }
+
+        if (request.Delete == 1)
+        {
+            _context.News.Remove(news);
+        }
+        else if (request.Publish == 1)
+        {
+            news.PublishedDate = DateTime.UtcNow;
+
+            news.NewsStatus = NewsStatus.Published;
+
+            _context.News.Update(news);
+        }
+        else
+        {
+            throw new ApplicationException("Request is Invalid");
+        }
+        
+
+        await _context.SaveChangesAsync();
+    }
 }

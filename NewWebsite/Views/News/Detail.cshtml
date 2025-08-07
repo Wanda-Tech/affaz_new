@@ -19,11 +19,13 @@
         </div>
 
         <h6 class="text-muted sub-title">@Model.News.CreatedDateString</h6>
-
-        <div class="news-image">
-            <img src="@Model.News.ImageUrl" alt="@Model.News.Title" height="300">
-        </div>
-
+        
+        @if(!string.IsNullOrWhiteSpace(Model.News.ImageUrl))
+        {
+            <div class="news-image">
+                <img src="@Model.News.ImageUrl" alt="@Model.News.Title" height="300">
+            </div>
+        }
 
         <div class="news-summary">
             <h4>Summary</h4>

@@ -1,0 +1,47 @@
+﻿@model PaginatedResponse<User>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h1>Users <a asp-action="CreateUser" class="btn btn-link">Create</a>
+</h1>
+
+<partial name="_TmpMessage" />
+
+<form class="d-flex just-between my-4 gap-2">
+    <input name="Search" placeholder="Search by title or user email" class="form-control" value="@ViewBag.Search" />
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<span>@Model.TotalRecordsCount records</span>
+
+<table class="table table-striped">
+    <thead>
+        <th>Id</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Roles</th>
+        <th>Created At</th>
+        <th></th>
+    </thead>
+    <tbody>
+        @foreach(var user in Model.Response)
+        {
+            <tr>
+                <td>@user.UserId</td>
+                <td>@user.Email</td>
+                <td>@user.Phone</td>
+                <td>
+                    @string.Join(", ", user.UserRoles.Select(q=> q.Role.Name).ToList())
+                </td>
+                <td>@user.CreatedDate</td>
+                <td>
+                    <a asp-action="EditUser" asp-controller="Admin" asp-route-id="@user.UserId" class="btn btn-link">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_Pagination" />

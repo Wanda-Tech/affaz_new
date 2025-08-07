@@ -32,6 +32,9 @@ dotnet ef database update
 ### To View Migrations
 dotnet ef migrations list
 
+### To Remove Migrations
+dotnet ef migrations remove
+
 
 ## To add db context
 ```

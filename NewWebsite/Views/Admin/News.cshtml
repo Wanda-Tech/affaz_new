@@ -43,7 +43,21 @@
                 <td>@news.NewsStatus</td>
                 <td>@news.CreatedDateString</td>
                 <td>
-                    <a asp-action="EditNews" asp-controller="Admin" asp-route-id="@news.NewsId" class="btn btn-link">Edit</a>
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-action="EditNews" asp-controller="Admin" asp-route-id="@news.NewsId">Edit</a></li>
+                            
+                            @if (!news.IsPublished)
+                            {
+                                <li><a class="dropdown-item" asp-action="ChangeNews" asp-controller="Admin" asp-route-id="@news.NewsId" asp-route-publish=1>Publish</a></li>
+                            }
+                            
+                            <li><a class="dropdown-item" asp-action="ChangeNews" asp-controller="Admin" asp-route-id="@news.NewsId" asp-route-delete=1>Remove</a></li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
         }

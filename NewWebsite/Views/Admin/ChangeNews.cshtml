@@ -1,0 +1,89 @@
+@model ChangeNewsRequest
+@{
+    string action = Model.Delete == 1 ? "Delete News" : "Publish News";
+}
+<form method="post" asp-action="ChangeNews">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    
+    <input asp-for="News.NewsId" type="hidden" />
+    <input asp-for="Delete" type="hidden" />
+    <input asp-for="Publish" type="hidden" />
+    <h4>Change News</h4>
+    
+    <div class="row mb-4 mt-5">
+        <div class="col-2">
+            <label asp-for="News.Title" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <input asp-for="News.Title" class="form-control" disabled />
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label class="control-label">NewsCategory</label>
+        </div>
+        <div class="col-9">
+            <strong>@Model.News.NewsCategory</strong>
+        </div>
+    </div>
+    
+
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="News.Summary" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <textarea asp-for="News.Summary" class="form-control" disabled></textarea>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="News.NewsStatus" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <stong>@Model.News.NewsStatus</stong>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-2">
+            <label asp-for="News.Content" class="control-label"></label>
+        </div>
+        <div class="col-9">
+            <textarea asp-for="News.Content" id="tinymce" disabled class=""></textarea>
+        </div>
+    </div>
+    
+    <div class="row mb-2 mt-4">
+        <div class="col-2">
+        </div>
+        <div class="col-9 text-right">
+            <button type="submit" class="btn btn-primary">@action</button>
+        </div>
+    </div>
+    
+</form>
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/8/tinymce.min.js"></script>
+
+    <script>
+    tinymce.init({
+        selector: 'textarea#tinymce',
+        height: 500,
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | ' +
+        'bold italic backcolor | alignleft aligncenter ' +
+        'alignright alignjustify | bullist numlist outdent indent | ' +
+        'removeformat | help',
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+        });
+    </script>
+
+}
