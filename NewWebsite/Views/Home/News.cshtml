@@ -1,0 +1,13 @@
+﻿@model PaginatedResponse<SimpleNews>
+@{
+    ViewData["Title"] = @ViewBag.header;
+}
+
+
+<h1 class="">@ViewBag.header</h1>
+
+@foreach(var news in Model.Response)
+{
+    <partial name="~/Views/News/_NewsCard.cshtml" model="news" />
+}
+

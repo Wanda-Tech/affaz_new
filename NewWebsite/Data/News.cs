@@ -5,6 +5,9 @@ public class News
 {
     [Key]
     public int NewsId { get; set; }
+    
+    [MaxLength(100)]
+    public string Slug { get; set; }
 
     [MaxLength(100)]
     public string Title { get; set; }

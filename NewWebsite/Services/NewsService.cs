@@ -23,6 +23,46 @@ public class NewsService : INewsService
         _accountService = accountService;
     }
 
+
+
+    public async Task<HomePageResponse> GetHomePageAsync()
+    {
+        IQueryable<News> query = _context.News
+            .Include(q=> q.NewsCategory)
+            // .Where(q => q.NewsStatus == NewsStatus.Published)
+            .OrderByDescending(q => q.CreatedDate).AsQueryable();
+
+        var first3News = await query
+            .Take(3)
+            .ToListAsync();
+
+        HomePageResponse response = new HomePageResponse();
+
+        response.TopNews = _mapper.Map<SimpleNews>(first3News.FirstOrDefault());
+        response.SecondNews = _mapper.Map<List<SimpleNews>>(first3News.Skip(1).Take(2).ToList());
+
+        var recentNews = await query
+            .Skip(3)
+            .Take(20)
+            .ToListAsync();
+
+        response.RecentNews = _mapper.Map<List<SimpleNews>>(recentNews);
+
+
+        // var newsList = await _context.NewsCategories
+        //     .Include(q => q.NewsList.OrderByDescending(q => q.CreatedDate).Take(4))
+        //     .ToListAsync();
+        // response.CategoryNewsList = newsList.ToDictionary(q => q.Name, q => _mapper.Map<List<SimpleNews>>(q.NewsList));
+        
+        var groupResponse = await query.GroupBy(q => q.NewsCategory.Name)
+            .Select(q => new { q.Key, NewsList = q.Take(4).ToList() })
+            .ToListAsync();
+
+        response.CategoryNewsList = groupResponse.ToDictionary(q => q.Key, q => _mapper.Map<List<SimpleNews>>(q.NewsList));
+
+        return response;
+    }
+
     public async Task<PaginatedResponse<SimpleNews>> GetAllNewsAsync(NewsSearchRequest request)
     {
         IQueryable<News> query = _context.News
@@ -37,10 +77,15 @@ public class NewsService : INewsService
                 q.User.Email == request.Search);
         }
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.CategorySlug))
         {
-            query = query.Where(q => q.NewsStatus == request.Status);
+            query = query.Where(q => q.NewsCategory.Name == request.CategorySlug);
         }
+
+        if (request.Status.HasValue)
+            {
+                query = query.Where(q => q.NewsStatus == request.Status);
+            }
 
         int totalCount = await query.CountAsync();
 
@@ -103,6 +148,20 @@ public class NewsService : INewsService
         return response;
     }
 
+    public async Task<SimpleNews> GetNewsBySlugAsync(string slug)
+    {
+        News? news = await _context.News
+            .Include(n => n.User)
+            .Include(n => n.NewsCategory)
+            .FirstOrDefaultAsync(n => n.Slug == slug);
+
+        ArgumentNullException.ThrowIfNull(news, $"News not found for id {slug}");
+
+        SimpleNews response = _mapper.Map<SimpleNews>(news);
+
+        return response;
+    }
+
     public async Task<int> UpdateLikesAsync(int newsId)
     {
         var news = await _context.News.FindAsync(newsId);
@@ -139,6 +198,7 @@ public class NewsService : INewsService
             }
 
             existingNews.Title = request.Title;
+            existingNews.Slug = request.Title.Slugify();
             existingNews.Summary = request.Summary;
             existingNews.Content = request.Content;
             existingNews.NewsCategoryId = request.NewsCategoryId;

@@ -8,8 +8,12 @@ namespace NewWebsite.Services;
 
 public interface INewsService
 {
+    public Task<HomePageResponse> GetHomePageAsync();
+
     public Task<PaginatedResponse<SimpleNews>> GetAllNewsAsync(NewsSearchRequest request);
+    
     public Task<SimpleNews> GetNewsByIdAsync(int id);
+    public Task<SimpleNews> GetNewsBySlugAsync(string slug);
     public Task<List<SimpleNews>> GetRandomNewsListAsync(int limit = 5);
     public Task<List<SimpleNews>> GetRecentNews(int limit = 10);
     public Task<int> UpdateLikesAsync(int newsId);

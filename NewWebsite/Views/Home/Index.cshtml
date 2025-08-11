@@ -1,4 +1,99 @@
-﻿@{
+﻿@model HomePageResponse
+@{
     ViewData["Title"] = "Home Page";
 }
 
+
+<div class="row">
+    <div class="col-8">
+        <div class="mb-2 top-news">
+            <a asp-action="Detail" asp-controller="News" asp-route-id="@Model.TopNews.Slug" class="card shadow mb-4">
+                <div class="img-container-lg">
+                    <img src="@(Model.TopNews.ImageUrl ?? "/img/no-image.svg")" height="100%" width="100%">
+                </div>
+                <div class="row card-body">
+                    <div class="col-12">
+                        <span class="badge bg-black">@Model.TopNews.NewsCategory</span>
+                        <h4 class="my-2">@Model.TopNews.Title</h4>
+                        
+                        <span class="text-muted small"><i class="fa fa-clock"></i> @Model.TopNews.CreatedDateString</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="mb-2 bottom-news row">
+            @foreach(var news in Model.SecondNews)
+            {
+                <div class="col">
+                    <a asp-action="Detail" asp-controller="News" asp-route-id="@news.Slug" class="card shadow mb-4">
+                        <div class="img-container">
+                            <img src="@(news.ImageUrl ?? "/img/no-image.svg")" height="100%" width="100%">
+                        </div>
+                        <div class="row card-body">
+                            <div class="col-12">
+                                <span class="badge bg-black">@news.NewsCategory</span>
+                                <h6 class="my-2">@news.Title</h6>
+                                
+                                <span class="text-muted small"><i class="fa fa-clock"></i> @news.CreatedDateString</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <div class="col-4 recent-news">
+        <h1>Recent News</h1>
+
+        @foreach(var news in Model.RecentNews)
+        {
+            <div class="col">
+                <a asp-action="Detail" asp-controller="News" asp-route-id="@news.Slug">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-12 col-sm-12 mb-sm-3">
+                            <div class="img-container-sm">
+                                <img src="@(news.ImageUrl ?? "/img/no-image.svg")" height="100%" width="100%">
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-md-12 col-sm-12 mb-sm-3">
+                            <p>@news.Title</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+    
+    <div class="col-12">
+        @foreach(var newsList in Model.CategoryNewsList)
+        {
+            <h4 class="text-center bg-secondary text-white rounded-3 py-4 opacity-50 mb-4">@newsList.Key</h4>
+            
+            <div class="row">
+                @for(int i = 0; i < 4; i ++)
+                {
+                    <div class="col">
+                        @if (i < newsList.Value.Count)
+                        {
+                            <a asp-action="Detail" asp-controller="News" asp-route-id="@newsList.Value[i].NewsId" class="card shadow mb-4">
+                                <div class="img-container">
+                                    <img src="@(newsList.Value[i].ImageUrl ?? "/img/no-image.svg")" height="100%" width="100%">
+                                </div>
+                                <div class="row card-body">
+                                    <div class="col-12">
+                                        <span class="badge bg-black">@newsList.Value[i].NewsCategory</span>
+                                        <h6 class="my-2">@newsList.Value[i].Title</h6>
+                                        
+                                        <span class="text-muted small"><i class="fa fa-clock"></i> @newsList.Value[i].CreatedDateString</span>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

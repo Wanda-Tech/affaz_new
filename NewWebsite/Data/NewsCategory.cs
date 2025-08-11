@@ -11,6 +11,9 @@ public class NewsCategory
 
     [MaxLength(255)]
     public string? Description { get; set; }
+    
+    [MaxLength(10)]
+    public string? CssColor { get; set; }
 
 
     public List<News> NewsList { get; set; } = new List<News>();

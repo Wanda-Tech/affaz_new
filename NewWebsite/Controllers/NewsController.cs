@@ -25,9 +25,18 @@ public class NewsController : Controller
         return View(newsList);
     }
 
-    public async Task<IActionResult> Detail(int id)
+    public async Task<IActionResult> Detail(string id)
     {
-        SimpleNews? news = await _newsService.GetNewsByIdAsync(id);
+        SimpleNews? news = null;
+
+        if (int.TryParse(id, out int newsId))
+        {
+            news = await _newsService.GetNewsByIdAsync(newsId);
+        }
+        else
+        {
+            news = await _newsService.GetNewsBySlugAsync(id);
+        }
 
         if (news == null)
         {

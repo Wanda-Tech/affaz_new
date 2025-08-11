@@ -14,6 +14,7 @@ public class NewsProfile : Profile
             
         CreateMap<NewsRequest, News>()
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.Title.Slugify()))
             .ForMember(dest => dest.TotalLikes, opt => opt.MapFrom(src=> 0));
     }
 }
